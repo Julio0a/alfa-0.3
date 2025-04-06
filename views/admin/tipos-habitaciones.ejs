@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <%- include('../partials/head', { titulo: titulo }) %>
+</head>
+<body>
+  <%- include('../partials/navbar') %>
+  
+  <div class="container mt-4">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+      <h1>Tipos de Habitaciones</h1>
+      <a href="/admin/tipos-habitaciones/nuevo" class="btn btn-primary">
+        <i class="fas fa-plus"></i> Nuevo Tipo
+      </a>
+    </div>
+    
+    <%- include('../partials/mensajes') %>
+    
+    <div class="card">
+      <div class="card-body">
+        <div class="table-responsive">
+          <table class="table table-striped table-hover">
+            <thead>
+              <tr>
+                <th>Nombre</th>
+                <th>Descripción</th>
+                <th>Capacidad</th>
+                <th>Precio por Noche</th>
+                <th>Acciones</th>
+              </tr>
+            </thead>
+            <tbody>
+              <% if (tipos.length === 0) { %>
+                <tr>
+                  <td colspan="5" class="text-center">No hay tipos de habitaciones registrados</td>
+                </tr>
+              <% } else { %>
+                <% tipos.forEach(tipo => { %>
+                  <tr>
+                    <td><%= tipo.NombreTipo %></td>
+                    <td><%= tipo.Descripcion || 'Sin descripción' %></td>
+                    <td><%= tipo.Capacidad %> personas</td>
+                    <td>L.<%= tipo.PrecioPorNoche.toFixed(2) %></td>
+                    <td>
+                      <a href="/admin/tipos-habitaciones/editar/<%= tipo.TipoHabitacionID %>" class="btn btn-sm btn-primary">
+                        <i class="fas fa-edit"></i>
+                      </a>
+                      <button type="button" class="btn btn-sm btn-danger" data-bs-toggle="modal" data-bs-target="#eliminarModal<%= tipo.TipoHabitacionID %>">
+                        <i class="fas fa-trash"></i>
+                      </button>
+                      
+                      <!-- Modal de Eliminación -->
+                      <div class="modal fade" id="eliminarModal<%= tipo.TipoHabitacionID %>" tabindex="-1" aria-labelledby="eliminarModalLabel<%= tipo.TipoHabitacionID %>" aria-hidden="true">
+                        <div class="modal-dialog">
+                          <div class="modal-content">
+                            <div class="modal-header">
+                              <h5 class="modal-title" id="eliminarModalLabel<%= tipo.TipoHabitacionID %>">Confirmar Eliminación</h5>
+                              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                            </div>
+                            <div class="modal-body">
+                              ¿Estás seguro de que deseas eliminar el tipo de habitación <%= tipo.NombreTipo %>? Esta acción no se puede deshacer.
+                            </div>
+                            <div class="modal-footer">
+                              <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                              <form action="/admin/tipos-habitaciones/eliminar/<%= tipo.TipoHabitacionID %>" method="POST">
+                                <button type="submit" class="btn btn-danger">Eliminar</button>
+                              </form>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </td>
+                  </tr>
+                <% }) %>
+              <% } %>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+  
+  <%- include('../partials/footer') %>
+  <%- include('../partials/scripts') %>
+</body>
+</html>
+

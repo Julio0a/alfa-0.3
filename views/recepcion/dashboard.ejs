@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <%- include('../partials/head', { titulo: titulo }) %>
+</head>
+<body>
+  <%- include('../partials/navbar') %>
+  
+  <div class="container mt-4">
+    <h1 class="mb-4">Panel de Recepción</h1>
+    
+    <%- include('../partials/mensajes') %>
+    
+    <div class="row">
+      <div class="col-md-4 mb-4">
+        <div class="card bg-primary text-white">
+          <div class="card-body">
+            <h5 class="card-title">Reservas</h5>
+            <p class="card-text display-4"><%= estadisticas.reservas.TotalReservas %></p>
+            <div class="mt-3">
+              <span class="badge bg-light text-primary">Pendientes: <%= estadisticas.reservas.Pendientes %></span>
+              <span class="badge bg-light text-primary">Confirmadas: <%= estadisticas.reservas.Confirmadas %></span>
+              <span class="badge bg-light text-primary">Completadas: <%= estadisticas.reservas.Completadas %></span>
+            </div>
+          </div>
+          <div class="card-footer d-flex justify-content-between align-items-center">
+            <span>Gestionar Reservas</span>
+            <a href="/recepcion/reservas" class="btn btn-light btn-sm">Ver</a>
+          </div>
+        </div>
+      </div>
+      
+      <div class="col-md-4 mb-4">
+        <div class="card bg-success text-white">
+          <div class="card-body">
+            <h5 class="card-title">Habitaciones</h5>
+            <p class="card-text display-4"><%= estadisticas.habitaciones.TotalHabitaciones %></p>
+            <div class="mt-3">
+              <span class="badge bg-light text-success">Disponibles: <%= estadisticas.habitaciones.Disponibles %></span>
+              <span class="badge bg-light text-success">Ocupadas: <%= estadisticas.habitaciones.Ocupadas %></span>
+              <span class="badge bg-light text-success">Mantenimiento: <%= estadisticas.habitaciones.Mantenimiento %></span>
+            </div>
+          </div>
+          <div class="card-footer d-flex justify-content-between align-items-center">
+            <span>Estado de Habitaciones</span>
+            <a href="/recepcion/habitaciones" class="btn btn-light btn-sm">Ver</a>
+          </div>
+        </div>
+      </div>
+      
+      <div class="col-md-4 mb-4">
+        <div class="card bg-info text-white">
+          <div class="card-body">
+            <h5 class="card-title">Acciones Rápidas</h5>
+            <div class="d-grid gap-2 mt-3">
+              <a href="/recepcion/reservas" class="btn btn-light">Gestionar Reservas</a>
+              <a href="/recepcion/clientes" class="btn btn-light">Buscar Clientes</a>
+              <a href="/recepcion/habitaciones" class="btn btn-light">Estado de Habitaciones</a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    
+    <div class="row">
+      <div class="col-md-12">
+        <div class="card">
+          <div class="card-header bg-primary text-white">
+            <h5 class="mb-0">Reservas Recientes</h5>
+          </div>
+          <div class="card-body">
+            <% if (reservasRecientes.length === 0) { %>
+              <p class="text-center">No hay reservas recientes</p>
+            <% } else { %>
+              <div class="table-responsive">
+                <table class="table table-hover">
+                  <thead>
+                    <tr>
+                      <th>ID</th>
+                      <th>Cliente</th>
+                      <th>Sucursal</th>
+                      <th>Fechas</th>
+                      <th>Estado</th>
+                      <th>Total</th>
+                      <th>Acciones</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <% reservasRecientes.forEach(reserva => { %>
+                      <tr>
+                        <td><%= reserva.ReservaID %></td>
+                        <td><%= reserva.PrimerNombre %> <%= reserva.PrimerApellido %></td>
+                        <td><%= reserva.NombreSucursal %></td>
+                        <td>
+                          <%= new Date(reserva.FechaInicio).toLocaleDateString() %> al 
+                          <%= new Date(reserva.FechaFin).toLocaleDateString() %>
+                        </td>
+                        <td>
+                          <% if (reserva.EstadoReserva === 'Pendiente') { %>
+                            <span class="badge bg-warning text-dark">Pendiente</span>
+                          <% } else if (reserva.EstadoReserva === 'Confirmada') { %>
+                            <span class="badge bg-success">Confirmada</span>
+                          <% } else if (reserva.EstadoReserva === 'Cancelada') { %>
+                            <span class="badge bg-danger">Cancelada</span>
+                          <% } else { %>
+                            <span class="badge bg-info">Completada</span>
+                          <% } %>
+                        </td>
+                        <td>L.<%= reserva.TotalEstadia.toFixed(2) %></td>
+                        <td>
+                          <a href="/recepcion/reservas/<%= reserva.ReservaID %>" class="btn btn-sm btn-primary">
+                            <i class="fas fa-eye"></i>
+                          </a>
+                        </td>
+                      </tr>
+                    <% }) %>
+                  </tbody>
+                </table>
+              </div>
+              <div class="text-end mt-3">
+                <a href="/recepcion/reservas" class="btn btn-outline-primary">Ver Todas</a>
+              </div>
+            <% } %>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  
+  <%- include('../partials/footer') %>
+  <%- include('../partials/scripts') %>
+</body>
+</html>
+

@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <%- include('../partials/head', { titulo: titulo }) %>
+</head>
+<body>
+  <%- include('../partials/navbar') %>
+  
+  <div class="container mt-4">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+      <h1><%= editar ? 'Editar' : 'Nuevo' %> Tipo de Habitación</h1>
+      <a href="/admin/tipos-habitaciones" class="btn btn-secondary">
+        <i class="fas fa-arrow-left"></i> Volver
+      </a>
+    </div>
+    
+    <%- include('../partials/mensajes') %>
+    
+    <div class="card">
+      <div class="card-body">
+        <form action="<%= editar ? `/admin/tipos-habitaciones/editar/${tipo.TipoHabitacionID}` : '/admin/tipos-habitaciones/nuevo' %>" method="POST">
+          <div class="mb-3">
+            <label for="nombreTipo" class="form-label">Nombre del Tipo</label>
+            <input type="text" class="form-control" id="nombreTipo" name="nombreTipo" value="<%= tipo.NombreTipo || '' %>" required>
+          </div>
+          
+          <div class="mb-3">
+            <label for="descripcion" class="form-label">Descripción</label>
+            <textarea class="form-control" id="descripcion" name="descripcion" rows="3"><%= tipo.Descripcion || '' %></textarea>
+          </div>
+          
+          <div class="row mb-3">
+            <div class="col-md-6">
+              <label for="capacidad" class="form-label">Capacidad (personas)</label>
+              <input type="number" class="form-control" id="capacidad" name="capacidad" value="<%= tipo.Capacidad || '' %>" min="1" required>
+            </div>
+            <div class="col-md-6">
+              <label for="precioPorNoche" class="form-label">Precio por Noche (L.)</label>
+              <input type="number" class="form-control" id="precioPorNoche" name="precioPorNoche" value="<%= tipo.PrecioPorNoche || '' %>" min="0" step="0.01" required>
+            </div>
+          </div>
+          
+          <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+            <a href="/admin/tipos-habitaciones" class="btn btn-secondary me-md-2">Cancelar</a>
+            <button type="submit" class="btn btn-primary">Guardar</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+  
+  <%- include('../partials/footer') %>
+  <%- include('../partials/scripts') %>
+</body>
+</html>
+

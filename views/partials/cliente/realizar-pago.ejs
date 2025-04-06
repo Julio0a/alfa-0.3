@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<%- include('../partials/head', { titulo: titulo }) %>
+</head>
+<body>
+<%- include('../partials/navbar') %>
+
+<div class="container mt-4">
+  <div class="d-flex justify-content-between align-items-center mb-4">
+    <h1>Realizar Pago - Factura #<%= factura.NumeroFactura %></h1>
+    <a href="/cliente/facturas/<%= factura.FacturaID %>" class="btn btn-secondary">
+      <i class="fas fa-arrow-left"></i> Volver a la Factura
+    </a>
+  </div>
+  
+  <%- include('../partials/mensajes') %>
+  
+  <div class="row">
+    <div class="col-md-8">
+      <div class="card mb-4">
+        <div class="card-header bg-primary text-white">
+          <h5 class="mb-0">Información de Pago</h5>
+        </div>
+        <div class="card-body">
+          <div class="row mb-3">
+            <div class="col-md-6">
+              <p><strong>Factura:</strong> <%= factura.NumeroFactura %></p>
+              <p><strong>Total a Pagar:</strong> L.<%= factura.Total.toFixed(2) %></p>
+            </div>
+            <div class="col-md-6">
+              <p><strong>Monto Pagado:</strong> L.<%= montoPagado.toFixed(2) %></p>
+              <p><strong>Monto Pendiente:</strong> L.<%= montoPendiente.toFixed(2) %></p>
+            </div>
+          </div>
+          
+          <% if (montoPendiente <= 0) { %>
+            <div class="alert alert-success">
+              <i class="fas fa-check-circle me-2"></i> Esta factura ha sido pagada completamente.
+            </div>
+          <% } else { %>
+            <form action="/cliente/facturas/<%= factura.FacturaID %>/pagar" method="POST">
+              <div class="mb-3">
+                <label for="metodoPagoID" class="form-label">Método de Pago</label>
+                <select class="form-select" id="metodoPagoID" name="metodoPagoID" required>
+                  <option value="">Seleccione un método de pago</option>
+                  <% metodosPago.forEach(metodo => { %>
+                    <option value="<%= metodo.MetodoPagoID %>"><%= metodo.Metodo %></option>
+                  <% }) %>
+                </select>
+              </div>
+              
+              <div class="mb-3">
+                <label for="monto" class="form-label">Monto a Pagar</label>
+                <div class="input-group">
+                  <span class="input-group-text">L.</span>
+                  <input type="number" class="form-control" id="monto" name="monto" step="0.01" min="0.01" max="<%= montoPendiente %>" value="<%= montoPendiente.toFixed(2) %>" required>
+                </div>
+                <div class="form-text">El monto máximo a pagar es L.<%= montoPendiente.toFixed(2) %></div>
+              </div>
+              
+              <div class="d-grid gap-2">
+                <button type="submit" class="btn btn-success">Realizar Pago</button>
+              </div>
+            </form>
+          <% } %>
+        </div>
+      </div>
+    </div>
+    
+    <div class="col-md-4">
+      <div class="card">
+        <div class="card-header bg-info text-white">
+          <h5 class="mb-0">Historial de Pagos</h5>
+        </div>
+        <div class="card-body">
+          <% if (pagos.length === 0) { %>
+            <p class="text-center">No hay pagos registrados</p>
+          <% } else { %>
+            <div class="table-responsive">
+              <table class="table table-striped">
+                <thead>
+                  <tr>
+                    <th>Fecha</th>
+                    <th>Método</th>
+                    <th>Monto</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <% pagos.forEach(pago => { %>
+                    <tr>
+                      <td><%= new Date(pago.FechaPago).toLocaleString() %></td>
+                      <td><%= pago.Metodo %></td>
+                      <td>L.<%= pago.Monto.toFixed(2) %></td>
+                    </tr>
+                  <% }) %>
+                </tbody>
+              </table>
+            </div>
+          <% } %>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<%- include('../partials/footer') %>
+<%- include('../partials/scripts') %>
+</body>
+</html>
+

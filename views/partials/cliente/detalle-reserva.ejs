@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <%- include('../partials/head', { titulo: titulo }) %>
+</head>
+<body>
+  <%- include('../partials/navbar') %>
+  
+  <div class="container mt-4">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+      <h1>Detalle de Reserva #<%= reserva.ReservaID %></h1>
+      <div>
+        <a href="/cliente/mis-reservas" class="btn btn-secondary me-2">
+          <i class="fas fa-arrow-left"></i> Volver
+        </a>
+        <% if (reserva.EstadoReserva === 'Pendiente') { %>
+          <button type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#cancelarModal">
+            <i class="fas fa-times"></i> Cancelar Reserva
+          </button>
+          
+          <!-- Modal de Cancelación -->
+          <div class="modal fade" id="cancelarModal" tabindex="-1" aria-labelledby="cancelarModalLabel" aria-hidden="true">
+            <div class="modal-dialog">
+              <div class="modal-content">
+                <div class="modal-header">
+                  <h5 class="modal-title" id="cancelarModalLabel">Confirmar Cancelación</h5>
+                  <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                  ¿Estás seguro de que deseas cancelar esta reserva? Esta acción no se puede deshacer.
+                </div>
+                <div class="modal-footer">
+                  <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+                  <form action="/cliente/mis-reservas/<%= reserva.ReservaID %>/cancelar" method="POST">
+                    <button type="submit" class="btn btn-danger">Cancelar Reserva</button>
+                  </form>
+                </div>
+              </div>
+            </div>
+          </div>
+        <% } %>
+      </div>
+    </div>
+    
+    <%- include('../partials/mensajes') %>
+    
+    <div class="row">
+      <div class="col-md-8">
+        <div class="card mb-4">
+          <div class="card-header bg-primary text-white">
+            <h5 class="mb-0">Información de la Reserva</h5>
+          </div>
+          <div class="card-body">
+            <div class="row mb-3">
+              <div class="col-md-6">
+                <p><strong>Estado:</strong> 
+                  <% if (reserva.EstadoReserva === 'Pendiente') { %>
+                    <span class="badge bg-warning text-dark">Pendiente</span>
+                  <% } else if (reserva.EstadoReserva === 'Confirmada') { %>
+                    <span class="badge bg-success">Confirmada</span>
+                  <% } else if (reserva.EstadoReserva === 'Cancelada') { %>
+                    <span class="badge bg-danger">Cancelada</span>
+                  <% } else { %>
+                    <span class="badge bg-info">Completada</span>
+                  <% } %>
+                </p>
+                <p><strong>Sucursal:</strong> <%= reserva.NombreSucursal %></p>
+                <p><strong>Cliente:</strong> <%= reserva.PrimerNombre %> <%= reserva.PrimerApellido %></p>
+                <p><strong>RTN:</strong> <%= reserva.RTN || 'No especificado' %></p>
+              </div>
+              <div class="col-md-6">
+                <p><strong>Total:</strong> L.<%= reserva.TotalEstadia.toFixed(2) %></p>
+                <% if (factura) { %>
+                  <p><strong>Factura:</strong> <a href="/cliente/facturas/<%= factura.FacturaID %>"><%= factura.NumeroFactura %></a></p>
+                <% } %>
+              </div>
+            </div>
+            
+            <h6 class="mb-3">Habitaciones</h6>
+            <div class="table-responsive mb-4">
+              <table class="table table-bordered">
+                <thead class="table-light">
+                  <tr>
+                    <th>Número</th>
+                    <th>Tipo</th>
+                    <th>Capacidad</th>
+                    <th>Precio/Noche</th>
+                    <th>Check-in</th>
+                    <th>Check-out</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <% habitaciones.forEach(habitacion => { %>
+                    <tr>
+                      <td><%= habitacion.NumeroHabitacion %></td>
+                      <td><%= habitacion.NombreTipo %></td>
+                      <td><%= habitacion.Capacidad %> personas</td>
+                      <td>L.<%= habitacion.PrecioPorNoche.toFixed(2) %></td>
+                      <td>
+                        <%= new Date(habitacion.FechaInicio).toLocaleDateString() %><br>
+                        <%= habitacion.HoraInicio %>
+                      </td>
+                      <td>
+                        <%= new Date(habitacion.FechaFin).toLocaleDateString() %><br>
+                        <%= habitacion.HoraFin %>
+                      </td>
+                    </tr>
+                  <% }) %>
+                </tbody>
+              </table>
+            </div>
+            
+            <% if (servicios.length > 0) { %>
+              <h6 class="mb-3">Servicios Adicionales</h6>
+              <div class="table-responsive">
+                <table class="table table-bordered">
+                  <thead class="table-light">
+                    <tr>
+                      <th>Servicio</th>
+                      <th>Precio</th>
+                      <th>Cantidad</th>
+                      <th>Subtotal</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <% servicios.forEach(servicio => { %>
+                      <tr>
+                        <td><%= servicio.NombreServicio %></td>
+                        <td>L.<%= servicio.Precio.toFixed(2) %></td>
+                        <td><%= servicio.Cantidad %></td>
+                        <td>L.<%= (servicio.Precio * servicio.Cantidad).toFixed(2) %></td>
+                      </tr>
+                    <% }) %>
+                  </tbody>
+                </table>
+              </div>
+            <% } %>
+          </div>
+        </div>
+      </div>
+      
+      <div class="col-md-4">
+        <div class="card mb-4">
+          <div class="card-header bg-info text-white">
+            <h5 class="mb-0">Información Importante</h5>
+          </div>
+          <div class="card-body">
+            <h6>Políticas de Cancelación</h6>
+            <p>Puedes cancelar tu reserva sin costo hasta 48 horas antes de la fecha de check-in.</p>
+            
+            <h6>Check-in / Check-out</h6>
+            <p>
+              <strong>Check-in:</strong> 14:00 hrs<br>
+              <strong>Check-out:</strong> 12:00 hrs
+            </p>
+            
+            <h6>Contacto</h6>
+            <p>
+              Si necesitas modificar tu reserva o tienes alguna pregunta, contáctanos:<br>
+              <i class="fas fa-phone me-2"></i> +504 2222-3333<br>
+              <i class="fas fa-envelope me-2"></i> reservas@hotelzafiro504.com
+            </p>
+          </div>
+        </div>
+        
+        <% if (factura) { %>
+          <div class="card">
+            <div class="card-header bg-success text-white">
+              <h5 class="mb-0">Factura</h5>
+            </div>
+            <div class="card-body">
+              <p><strong>Número:</strong> <%= factura.NumeroFactura %></p>
+              <p><strong>Fecha:</strong> <%= new Date(factura.FechaEmision).toLocaleDateString() %></p>
+              <p><strong>Subtotal:</strong> L.<%= factura.SubTotal.toFixed(2) %></p>
+              <p><strong>ISV (15%):</strong> L.<%= factura.ISV.toFixed(2) %></p>
+              <p><strong>Total:</strong> L.<%= factura.Total.toFixed(2) %></p>
+              <% } %>
+              // Agregar botón para generar factura si no existe
+              <% if (!factura && (reserva.EstadoReserva === 'Confirmada' || reserva.EstadoReserva === 'Completada')) { %>
+                <div class="d-grid gap-2 mt-3">
+                  <button type="button" class="btn btn-success" data-bs-toggle="modal" data-bs-target="#generarFacturaModal">
+                    <i class="fas fa-file-invoice-dollar me-2"></i> Generar Factura
+                  </button>
+                </div>
+                
+                <!-- Modal de Generación de Factura -->
+                <div class="modal fade" id="generarFacturaModal" tabindex="-1" aria-labelledby="generarFacturaModalLabel" aria-hidden="true">
+                  <div class="modal-dialog">
+                    <div class="modal-content">
+                      <div class="modal-header">
+                        <h5 class="modal-title" id="generarFacturaModalLabel">Confirmar Generación de Factura</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                      </div>
+                      <div class="modal-body">
+                        <p>¿Estás seguro de que deseas generar una factura para esta reserva?</p>
+                        <p>Una vez generada la factura, podrás proceder al pago.</p>
+                      </div>
+                      <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                        <form action="/cliente/mis-reservas/<%= reserva.ReservaID %>/generar-factura" method="POST">
+                          <button type="submit" class="btn btn-success">Generar Factura</button>
+                        </form>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              <% } else if (factura) { %>
+                <div class="d-grid gap-2 mt-3">
+                  <a href="/cliente/facturas/<%= factura.FacturaID %>" class="btn btn-primary">
+                    <i class="fas fa-file-invoice-dollar me-2"></i> Ver Factura
+                  </a>
+                  <% if (factura.EstadoFactura === 0) { %>
+                    <a href="/cliente/facturas/<%= factura.FacturaID %>/pagar" class="btn btn-success">
+                      <i class="fas fa-money-bill-wave me-2"></i> Realizar Pago
+                    </a>
+                  <% } %>
+                </div>
+              <% } %>
+            </div>
+          </div>
+        <% } %>
+      </div>
+    </div>
+  </div>
+  
+  <%- include('../partials/footer') %>
+  <%- include('../partials/scripts') %>
+</body>
+</html>
+

@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <%- include('../partials/head', { titulo: titulo }) %>
+</head>
+<body>
+  <%- include('../partials/navbar') %>
+  
+  <div class="container mt-4">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+      <h1><%= editar ? 'Editar' : 'Nueva' %> Habitación</h1>
+      <a href="/admin/habitaciones" class="btn btn-secondary">
+        <i class="fas fa-arrow-left"></i> Volver
+      </a>
+    </div>
+    
+    <%- include('../partials/mensajes') %>
+    
+    <div class="card">
+      <div class="card-body">
+        <form action="<%= editar ? `/admin/habitaciones/editar/${habitacion.HabitacionID}` : '/admin/habitaciones/nueva' %>" method="POST">
+          <div class="row mb-3">
+            <div class="col-md-6">
+              <label for="sucursalID" class="form-label">Sucursal</label>
+              <select class="form-select" id="sucursalID" name="sucursalID" required>
+                <option value="">Seleccione una sucursal</option>
+                <% sucursales.forEach(sucursal => { %>
+                  <option value="<%= sucursal.SucursalID %>" <%= (habitacion.SucursalID == sucursal.SucursalID) ? 'selected' : '' %>>
+                    <%= sucursal.NombreSucursal %>
+                  </option>
+                <% }) %>
+              </select>
+            </div>
+            <div class="col-md-6">
+              <label for="numeroHabitacion" class="form-label">Número de Habitación</label>
+              <input type="text" class="form-control" id="numeroHabitacion" name="numeroHabitacion" value="<%= habitacion.NumeroHabitacion || '' %>" required>
+            </div>
+          </div>
+          
+          <div class="row mb-3">
+            <div class="col-md-6">
+              <label for="tipoHabitacionID" class="form-label">Tipo de Habitación</label>
+              <select class="form-select" id="tipoHabitacionID" name="tipoHabitacionID" required>
+                <option value="">Seleccione un tipo</option>
+                <% tipos.forEach(tipo => { %>
+                  <option value="<%= tipo.TipoHabitacionID %>" <%= (habitacion.TipoHabitacionID == tipo.TipoHabitacionID) ? 'selected' : '' %>>
+                    <%= tipo.NombreTipo %>
+                  </option>
+                <% }) %>
+              </select>
+            </div>
+            <div class="col-md-6">
+              <label for="estado" class="form-label">Estado</label>
+              <select class="form-select" id="estado" name="estado" required>
+                <option value="Disponible" <%= (habitacion.Estado === 'Disponible') ? 'selected' : '' %>>Disponible</option>
+                <option value="Ocupada" <%= (habitacion.Estado === 'Ocupada') ? 'selected' : '' %>>Ocupada</option>
+                <option value="Mantenimiento" <%= (habitacion.Estado === 'Mantenimiento') ? 'selected' : '' %>>Mantenimiento</option>
+              </select>
+            </div>
+          </div>
+          
+          <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+            <a href="/admin/habitaciones" class="btn btn-secondary me-md-2">Cancelar</a>
+            <button type="submit" class="btn btn-primary">Guardar</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+  
+  <%- include('../partials/footer') %>
+  <%- include('../partials/scripts') %>
+</body>
+</html>
+

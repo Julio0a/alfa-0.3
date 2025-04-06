@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <%- include('../partials/head', { titulo: titulo }) %>
+  <style>
+    .factura-header {
+      border-bottom: 1px solid #dee2e6;
+      padding-bottom: 20px;
+      margin-bottom: 20px;
+    }
+    .factura-footer {
+      border-top: 1px solid #dee2e6;
+      padding-top: 20px;
+      margin-top: 20px;
+    }
+    .factura-table th, .factura-table td {
+      padding: 10px;
+    }
+  </style>
+</head>
+<body>
+  <%- include('../partials/navbar') %>
+  
+  <div class="container mt-4">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+      <h1>Factura #<%= factura.NumeroFactura %></h1>
+      <div>
+        <a href="/cliente/facturas" class="btn btn-secondary me-2">
+          <i class="fas fa-arrow-left"></i> Volver
+        </a>
+        <button class="btn btn-primary" onclick="window.print()">
+          <i class="fas fa-print"></i> Imprimir
+        </button>
+      </div>
+    </div>
+    
+    <div class="card">
+      <div class="card-body">
+        <div class="factura-header">
+          <div class="row">
+            <div class="col-md-6">
+              <h4>Hotel Zafiro 504</h4>
+              <p>
+                Sucursal: <%= factura.NombreSucursal %><br>
+                Dirección: <%= factura.DireccionSucursal || 'Calle Principal, Tegucigalpa' %><br>
+                Teléfono: <%= factura.TelefonoSucursal || '+504 2222-3333' %><br>
+                CAI: <%= factura.CAICode %>
+              </p>
+            </div>
+            <div class="col-md-6 text-md-end">
+              <h4>Factura</h4>
+              <p>
+                Número: <%= factura.NumeroFactura %><br>
+                Fecha: <%= new Date(factura.FechaEmision).toLocaleDateString() %><br>
+                RTN: <%= factura.RTN || 'No especificado' %>
+              </p>
+            </div>
+          </div>
+        </div>
+        
+        <div class="row mb-4">
+          <div class="col-md-6">
+            <h5>Cliente</h5>
+            <p>
+              Nombre: <%= factura.PrimerNombre %> <%= factura.PrimerApellido %><br>
+              Correo: <%= factura.Correo %><br>
+              RTN: <%= factura.RTN || 'No especificado' %>
+            </p>
+          </div>
+        </div>
+        
+        <h5>Detalle de Habitaciones</h5>
+        <div class="table-responsive mb-4">
+          <table class="table table-bordered factura-table">
+            <thead class="table-light">
+              <tr>
+                <th>Habitación</th>
+                <th>Tipo</th>
+                <th>Precio/Noche</th>
+                <th>Noches</th>
+                <th>Subtotal</th>
+              </tr>
+            </thead>
+            <tbody>
+              <% habitaciones.forEach(habitacion => { %>
+                <tr>
+                  <td><%= habitacion.NumeroHabitacion %></td>
+                  <td><%= habitacion.NombreTipo %></td>
+                  <td>L.<%= habitacion.PrecioPorNoche.toFixed(2) %></td>
+                  <td><%= habitacion.NumNoches %></td>
+                  <td>L.<%= habitacion.Subtotal.toFixed(2) %></td>
+                </tr>
+              <% }) %>
+            </tbody>
+          </table>
+        </div>
+        
+        <% if (servicios.length > 0) { %>
+          <h5>Servicios Adicionales</h5>
+          <div class="table-responsive mb-4">
+            <table class="table table-bordered factura-table">
+              <thead class="table-light">
+                <tr>
+                  <th>Servicio</th>
+                  <th>Precio</th>
+                  <th>Cantidad</th>
+                  <th>Subtotal</th>
+                </tr>
+              </thead>
+              <tbody>
+                <% servicios.forEach(servicio => { %>
+                  <tr>
+                    <td><%= servicio.NombreServicio %></td>
+                    <td>L.<%= servicio.Precio.toFixed(2) %></td>
+                    <td><%= servicio.Cantidad %></td>
+                    <td>L.<%= servicio.Subtotal.toFixed(2) %></td>
+                  </tr>
+                <% }) %>
+              </tbody>
+            </table>
+          </div>
+        <% } %>
+        
+        <div class="factura-footer">
+          <div class="row">
+            <div class="col-md-6">
+              <p>
+                <strong>Notas:</strong><br>
+                Gracias por su preferencia. Para cualquier consulta sobre esta factura, por favor comuníquese con nosotros.
+              </p>
+            </div>
+            <div class="col-md-6">
+              <div class="table-responsive">
+                <table class="table table-borderless text-end">
+                  <tr>
+                    <th>Subtotal:</th>
+                    <td>L.<%= factura.SubTotal.toFixed(2) %></td>
+                  </tr>
+                  <tr>
+                    <th>ISV (15%):</th>
+                    <td>L.<%= factura.ISV.toFixed(2) %></td>
+                  </tr>
+                  <tr>
+                    <th>Total:</th>
+                    <td><strong>L.<%= factura.Total.toFixed(2) %></strong></td>
+                  </tr>
+                </table>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  
+  <%- include('../partials/footer') %>
+  <%- include('../partials/scripts') %>
+</body>
+</html>
+

@@ -1,0 +1,98 @@
+<nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+  <div class="container">
+    <a class="navbar-brand" href="/">Hotel Zafiro 504</a>
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarNav">
+      <ul class="navbar-nav me-auto">
+        <li class="nav-item">
+          <a class="nav-link" href="/">Inicio</a>
+        </li>
+        
+        <% if (locals.usuario) { %>
+          <% if (locals.usuario.roles.includes('Administrador')) { %>
+            <li class="nav-item">
+              <a class="nav-link" href="/admin/dashboard">Panel Admin</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="/admin/habitaciones">Habitaciones</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="/admin/servicios">Servicios</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="/admin/usuarios">Usuarios</a>
+            </li>
+          <% } %>
+          
+          <% if (locals.usuario.roles.includes('Cliente')) { %>
+            <li class="nav-item">
+              <a class="nav-link" href="/cliente/dashboard">Mi Panel</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="/cliente/buscar-habitaciones">Buscar Habitaciones</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="/cliente/mis-reservas">Mis Reservas</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="/cliente/facturas">Mis Facturas</a>
+            </li>
+          <% } %>
+          
+          <% if (locals.usuario.roles.includes('Recepcionista')) { %>
+            <li class="nav-item">
+              <a class="nav-link" href="/recepcion/dashboard">Panel Recepción</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="/recepcion/reservas">Reservas</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="/recepcion/clientes">Clientes</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="/recepcion/habitaciones">Habitaciones</a>
+            </li>
+          <% } %>
+          
+          <% if (locals.usuario.roles.includes('RecursosHumanos')) { %>
+            <li class="nav-item">
+              <a class="nav-link" href="/rrh/dashboard">Panel RRHH</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="/rrh/empleados">Empleados</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="/rrh/puestos">Puestos</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="/rrh/turnos">Turnos</a>
+            </li>
+          <% } %>
+        <% } %>
+      </ul>
+      
+      <ul class="navbar-nav">
+        <% if (locals.usuario) { %>
+          <li class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+              <%= locals.usuario.nombre %>
+            </a>
+            <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+              <li><a class="dropdown-item" href="/logout">Cerrar Sesión</a></li>
+            </ul>
+          </li>
+        <% } else { %>
+          <li class="nav-item">
+            <a class="nav-link" href="/login">Iniciar Sesión</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="/registro">Registrarse</a>
+          </li>
+        <% } %>
+      </ul>
+    </div>
+  </div>
+</nav>
+

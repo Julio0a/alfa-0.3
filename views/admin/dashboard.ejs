@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <%- include('../partials/head', { titulo: titulo }) %>
+</head>
+<body>
+  <%- include('../partials/navbar') %>
+  
+  <div class="container mt-4">
+    <h1 class="mb-4">Panel de Administración</h1>
+    
+    <%- include('../partials/mensajes') %>
+    
+    <div class="row">
+      <div class="col-md-4 mb-4">
+        <div class="card bg-primary text-white">
+          <div class="card-body">
+            <h5 class="card-title">Habitaciones</h5>
+            <p class="card-text display-4"><%= estadisticas.habitaciones.TotalHabitaciones %></p>
+            <div class="mt-3">
+              <span class="badge bg-light text-primary">Disponibles: <%= estadisticas.habitaciones.Disponibles %></span>
+              <span class="badge bg-light text-primary">Ocupadas: <%= estadisticas.habitaciones.Ocupadas %></span>
+              <span class="badge bg-light text-primary">Mantenimiento: <%= estadisticas.habitaciones.Mantenimiento %></span>
+            </div>
+          </div>
+          <div class="card-footer d-flex justify-content-between align-items-center">
+            <span>Gestionar Habitaciones</span>
+            <a href="/admin/habitaciones" class="btn btn-light btn-sm">Ver</a>
+          </div>
+        </div>
+      </div>
+      
+      <div class="col-md-4 mb-4">
+        <div class="card bg-success text-white">
+          <div class="card-body">
+            <h5 class="card-title">Reservas</h5>
+            <p class="card-text display-4"><%= estadisticas.reservas.TotalReservas %></p>
+            <div class="mt-3">
+              <span class="badge bg-light text-success">Pendientes: <%= estadisticas.reservas.Pendientes %></span>
+              <span class="badge bg-light text-success">Confirmadas: <%= estadisticas.reservas.Confirmadas %></span>
+              <span class="badge bg-light text-success">Completadas: <%= estadisticas.reservas.Completadas %></span>
+            </div>
+          </div>
+        
+        </div>
+      </div>
+      
+      <div class="col-md-4 mb-4">
+        <div class="card bg-info text-white">
+          <div class="card-body">
+            <h5 class="card-title">Facturas</h5>
+            <p class="card-text display-4"><%= estadisticas.facturas.TotalFacturas %></p>
+            <div class="mt-3">
+              <span class="badge bg-light text-info">Monto Total: L.<%= estadisticas.facturas.MontoTotal ? estadisticas.facturas.MontoTotal.toFixed(2) : '0.00' %></span>
+            </div>
+          </div>
+          <div class="card-footer d-flex justify-content-between align-items-center">
+           
+          
+          </div>
+        </div>
+      </div>
+    </div>
+    
+    <div class="row mt-4">
+      <div class="col-md-6 mb-4">
+        <div class="card">
+          <div class="card-header bg-primary text-white">
+            <h5 class="mb-0">Accesos Rápidos</h5>
+          </div>
+          <div class="card-body">
+            <div class="list-group">
+              <a href="/admin/habitaciones" class="list-group-item list-group-item-action d-flex justify-content-between align-items-center">
+                Gestión de Habitaciones
+                <i class="fas fa-chevron-right"></i>
+              </a>
+              <a href="/admin/tipos-habitaciones" class="list-group-item list-group-item-action d-flex justify-content-between align-items-center">
+                Tipos de Habitaciones
+                <i class="fas fa-chevron-right"></i>
+              </a>
+              <a href="/admin/servicios" class="list-group-item list-group-item-action d-flex justify-content-between align-items-center">
+                Servicios Adicionales
+                <i class="fas fa-chevron-right"></i>
+              </a>
+              <a href="/admin/usuarios" class="list-group-item list-group-item-action d-flex justify-content-between align-items-center">
+                Usuarios y Permisos
+                <i class="fas fa-chevron-right"></i>
+              </a>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <div class="col-md-6 mb-4">
+        <div class="card">
+          <div class="card-header bg-success text-white">
+            <h5 class="mb-0">Información del Sistema</h5>
+          </div>
+          <div class="card-body">
+            <p><strong>Nombre del Hotel:</strong> Hotel Zafiro 504</p>
+            <p><strong>Versión del Sistema:</strong> 1.0.0</p>
+            <p><strong>Usuario:</strong> <%= locals.usuario.nombre %></p>
+            <p><strong>Roles:</strong> <%= locals.usuario.roles.join(', ') %></p>
+            <p><strong>Fecha y Hora:</strong> <%= new Date().toLocaleString() %></p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  
+  <%- include('../partials/footer') %>
+  <%- include('../partials/scripts') %>
+</body>
+</html>
+

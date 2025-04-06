@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<%- include('../partials/head', { titulo: titulo }) %>
+</head>
+<body>
+<%- include('../partials/navbar') %>
+
+<div class="container mt-4">
+  <div class="d-flex justify-content-between align-items-center mb-4">
+    <h1><%= editar ? 'Editar' : 'Nuevo' %> Departamento de Servicio</h1>
+    <a href="/admin/departamentos-servicios" class="btn btn-secondary">
+      <i class="fas fa-arrow-left"></i> Volver
+    </a>
+  </div>
+  
+  <%- include('../partials/mensajes') %>
+  
+  <div class="card">
+    <div class="card-body">
+      <form action="<%= editar ? `/admin/departamentos-servicios/editar/${departamento.DepartamentoID}` : '/admin/departamentos-servicios/nuevo' %>" method="POST">
+        <div class="mb-3">
+          <label for="sucursalID" class="form-label">Sucursal</label>
+          <select class="form-select" id="sucursalID" name="sucursalID" required>
+            <option value="">Seleccione una sucursal</option>
+            <% sucursales.forEach(sucursal => { %>
+              <option value="<%= sucursal.SucursalID %>" <%= (departamento.SucursalID == sucursal.SucursalID) ? 'selected' : '' %>>
+                <%= sucursal.NombreSucursal %>
+              </option>
+            <% }) %>
+          </select>
+        </div>
+        
+        <div class="mb-3">
+          <label for="nombreDepartamento" class="form-label">Nombre del Departamento</label>
+          <input type="text" class="form-control" id="nombreDepartamento" name="nombreDepartamento" value="<%= departamento.NombreDepartamento || '' %>" required>
+        </div>
+        
+        <div class="mb-3">
+          <label for="descripcion" class="form-label">Descripción</label>
+          <textarea class="form-control" id="descripcion" name="descripcion" rows="3"><%= departamento.Descripcion || '' %></textarea>
+        </div>
+        
+        <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+          <a href="/admin/departamentos-servicios" class="btn btn-secondary me-md-2">Cancelar</a>
+          <button type="submit" class="btn btn-primary">Guardar</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+<%- include('../partials/footer') %>
+<%- include('../partials/scripts') %>
+</body>
+</html>
+

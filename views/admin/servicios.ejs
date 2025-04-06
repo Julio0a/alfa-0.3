@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <%- include('../partials/head', { titulo: titulo }) %>
+</head>
+<body>
+  <%- include('../partials/navbar') %>
+  
+  <div class="container mt-4">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+      <h1>Servicios Adicionales</h1>
+      <a href="/admin/servicios/nuevo" class="btn btn-primary">
+        <i class="fas fa-plus"></i> Nuevo Servicio
+      </a>
+    </div>
+    
+    <%- include('../partials/mensajes') %>
+    
+    <div class="card">
+      <div class="card-body">
+        <div class="table-responsive">
+          <table class="table table-striped table-hover">
+            <thead>
+              <tr>
+                <th>Nombre del Servicio</th>
+                <th>Precio</th>
+                <th>Acciones</th>
+              </tr>
+            </thead>
+            <tbody>
+              <% if (servicios.length === 0) { %>
+                <tr>
+                  <td colspan="3" class="text-center">No hay servicios adicionales registrados</td>
+                </tr>
+              <% } else { %>
+                <% servicios.forEach(servicio => { %>
+                  <tr>
+                    <td><%= servicio.NombreServicio %></td>
+                    <td>L.<%= servicio.Precio.toFixed(2) %></td>
+                    <td>
+                      <a href="/admin/servicios/editar/<%= servicio.ServicioID %>" class="btn btn-sm btn-primary">
+                        <i class="fas fa-edit"></i>
+                      </a>
+                      <button type="button" class="btn btn-sm btn-danger" data-bs-toggle="modal" data-bs-target="#eliminarModal<%= servicio.ServicioID %>">
+                        <i class="fas fa-trash"></i>
+                      </button>
+                      
+                      <!-- Modal de Eliminación -->
+                      <div class="modal fade" id="eliminarModal<%= servicio.ServicioID %>" tabindex="-1" aria-labelledby="eliminarModalLabel<%= servicio.ServicioID %>" aria-hidden="true">
+                        <div class="modal-dialog">
+                          <div class="modal-content">
+                            <div class="modal-header">
+                              <h5 class="modal-title" id="eliminarModalLabel<%= servicio.ServicioID %>">Confirmar Eliminación</h5>
+                              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                            </div>
+                            <div class="modal-body">
+                              ¿Estás seguro de que deseas eliminar el servicio <%= servicio.NombreServicio %>? Esta acción no se puede deshacer.
+                            </div>
+                            <div class="modal-footer">
+                              <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                              <form action="/admin/servicios/eliminar/<%= servicio.ServicioID %>" method="POST">
+                                <button type="submit" class="btn btn-danger">Eliminar</button>
+                              </form>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </td>
+                  </tr>
+                <% }) %>
+              <% } %>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+  
+  <%- include('../partials/footer') %>
+  <%- include('../partials/scripts') %>
+</body>
+</html>
+

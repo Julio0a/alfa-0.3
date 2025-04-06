@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<%- include('../partials/head', { titulo: titulo }) %>
+</head>
+<body>
+<%- include('../partials/navbar') %>
+
+<div class="container mt-4">
+  <div class="d-flex justify-content-between align-items-center mb-4">
+    <h1>Asignar Servicios a Departamento</h1>
+    <a href="/admin/departamentos-servicios" class="btn btn-secondary">
+      <i class="fas fa-arrow-left"></i> Volver
+    </a>
+  </div>
+  
+  <%- include('../partials/mensajes') %>
+  
+  <div class="card mb-4">
+    <div class="card-header bg-primary text-white">
+      <h5 class="mb-0">Información del Departamento</h5>
+    </div>
+    <div class="card-body">
+      <p><strong>Departamento:</strong> <%= departamento.NombreDepartamento %></p>
+      <p><strong>Sucursal:</strong> <%= departamento.NombreSucursal %></p>
+    </div>
+  </div>
+  
+  <div class="card">
+    <div class="card-header bg-success text-white">
+      <h5 class="mb-0">Seleccionar Servicios</h5>
+    </div>
+    <div class="card-body">
+      <form action="/admin/departamentos-servicios/<%= departamento.DepartamentoID %>/asignar-servicios" method="POST">
+        <div class="row">
+          <% if (servicios.length === 0) { %>
+            <div class="col-12">
+              <p class="text-center">No hay servicios disponibles</p>
+            </div>
+          <% } else { %>
+            <% servicios.forEach(servicio => { %>
+              <div class="col-md-4 mb-3">
+                <div class="form-check">
+                  <input class="form-check-input" type="checkbox" value="<%= servicio.ServicioID %>" id="servicio<%= servicio.ServicioID %>" name="servicios[]" <%= servicio.Asignado ? 'checked' : '' %>>
+                  <label class="form-check-label" for="servicio<%= servicio.ServicioID %>">
+                    <%= servicio.NombreServicio %> - L.<%= servicio.Precio.toFixed(2) %>
+                  </label>
+                </div>
+              </div>
+            <% }) %>
+          <% } %>
+        </div>
+        
+        <div class="d-grid gap-2 d-md-flex justify-content-md-end mt-4">
+          <a href="/admin/departamentos-servicios" class="btn btn-secondary me-md-2">Cancelar</a>
+          <button type="submit" class="btn btn-primary">Guardar Asignaciones</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+<%- include('../partials/footer') %>
+<%- include('../partials/scripts') %>
+</body>
+</html>
+

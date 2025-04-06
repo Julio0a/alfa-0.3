@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <%- include('../partials/head', { titulo: titulo }) %>
+</head>
+<body>
+  <%- include('../partials/navbar') %>
+  
+  <div class="container mt-4">
+    <h1 class="mb-4">Buscar Habitaciones</h1>
+    
+    <%- include('../partials/mensajes') %>
+    
+    <div class="card mb-4">
+      <div class="card-header bg-primary text-white">
+        <h5 class="mb-0">Filtros de Búsqueda</h5>
+      </div>
+      <div class="card-body">
+        <form action="/cliente/buscar-habitaciones" method="GET">
+          <div class="row g-3">
+            <div class="col-md-3">
+              <label for="fechaInicio" class="form-label">Fecha de Llegada</label>
+              <input type="date" class="form-control" id="fechaInicio" name="fechaInicio" value="<%= filtros.fechaInicio || '' %>" required>
+            </div>
+            <div class="col-md-3">
+              <label for="fechaFin" class="form-label">Fecha de Salida</label>
+              <input type="date" class="form-control" id="fechaFin" name="fechaFin" value="<%= filtros.fechaFin || '' %>" required>
+            </div>
+            <div class="col-md-3">
+              <label for="sucursal" class="form-label">Sucursal</label>
+              <select class="form-select" id="sucursal" name="sucursal">
+                <option value="">Todas las sucursales</option>
+                <% sucursales.forEach(sucursal => { %>
+                  <option value="<%= sucursal.SucursalID %>" <%= filtros.sucursal == sucursal.SucursalID ? 'selected' : '' %>>
+                    <%= sucursal.NombreSucursal %>
+                  </option>
+                <% }) %>
+              </select>
+            </div>
+            <div class="col-md-2">
+              <label for="capacidad" class="form-label">Capacidad</label>
+              <select class="form-select" id="capacidad" name="capacidad">
+                <option value="">Cualquiera</option>
+                <option value="1" <%= filtros.capacidad == '1' ? 'selected' : '' %>>1 persona</option>
+                <option value="2" <%= filtros.capacidad == '2' ? 'selected' : '' %>>2 personas</option>
+                <option value="3" <%= filtros.capacidad == '3' ? 'selected' : '' %>>3 personas</option>
+                <option value="4" <%= filtros.capacidad == '4' ? 'selected' : '' %>>4 personas</option>
+                <option value="5" <%= filtros.capacidad == '5' ? 'selected' : '' %>>5+ personas</option>
+              </select>
+            </div>
+            <div class="col-md-1 d-flex align-items-end">
+              <button type="submit" class="btn btn-primary w-100">Buscar</button>
+            </div>
+          </div>
+        </form>
+      </div>
+    </div>
+    
+    <% if (Object.keys(filtros).length > 0 && filtros.fechaInicio && filtros.fechaFin) { %>
+      <div class="row">
+        <% if (habitaciones.length === 0) { %>
+          <div class="col-12">
+            <div class="alert alert-info">
+              No se encontraron habitaciones disponibles para las fechas seleccionadas.
+            </div>
+          </div>
+        <% } else { %>
+          <div class="col-12 mb-3">
+            <h3>Resultados de la búsqueda</h3>
+            <p>Se encontraron <%= habitaciones.length %> habitaciones disponibles para el período del <%= new Date(filtros.fechaInicio).toLocaleDateString() %> al <%= new Date(filtros.fechaFin).toLocaleDateString() %> (<%= numNoches %> noches)</p>
+          </div>
+          
+          <% if (habitacionesSeleccionadas && habitacionesSeleccionadas.length > 0) { %>
+            <div class="col-12 mb-4">
+              <div class="card">
+                <div class="card-header bg-success text-white">
+                  <h5 class="mb-0">Habitaciones Seleccionadas</h5>
+                </div>
+                <div class="card-body">
+                  <div class="table-responsive">
+                    <table class="table table-striped">
+                      <thead>
+                        <tr>
+                          <th>Sucursal</th>
+                          <th>Habitación</th>
+                          <th>Tipo</th>
+                          <th>Capacidad</th>
+                          <th>Precio/Noche</th>
+                          <th>Noches</th>
+                          <th>Total</th>
+                          <th>Acciones</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        <% let precioTotalGeneral = 0 %>
+                        <% habitacionesSeleccionadas.forEach(hab => { %>
+                          <% precioTotalGeneral += hab.precioTotal %>
+                          <tr>
+                            <td><%= hab.nombreSucursal %></td>
+                            <td><%= hab.numeroHabitacion %></td>
+                            <td><%= hab.nombreTipo %></td>
+                            <td><%= hab.capacidad %> personas</td>
+                            <td>L.<%= hab.precioPorNoche.toFixed(2) %></td>
+                            <td><%= hab.numNoches %></td>
+                            <td>L.<%= hab.precioTotal.toFixed(2) %></td>
+                            <td>
+                              <form action="/cliente/quitar-habitacion" method="POST">
+                                <input type="hidden" name="habitacionID" value="<%= hab.habitacionID %>">
+                                <input type="hidden" name="fechaInicio" value="<%= filtros.fechaInicio %>">
+                                <input type="hidden" name="fechaFin" value="<%= filtros.fechaFin %>">
+                                <button type="submit" class="btn btn-sm btn-danger">
+                                  <i class="fas fa-times"></i> Quitar
+                                </button>
+                              </form>
+                            </td>
+                          </tr>
+                        <% }) %>
+                        <tr class="table-info">
+                          <td colspan="6" class="text-end fw-bold">Total General:</td>
+                          <td class="fw-bold">L.<%= precioTotalGeneral.toFixed(2) %></td>
+                          <td></td>
+                        </tr>
+                      </tbody>
+                    </table>
+                  </div>
+                  <div class="d-grid gap-2 d-md-flex justify-content-md-end mt-3">
+                    <a href="/cliente/crear-reserva" class="btn btn-primary">
+                      <i class="fas fa-check"></i> Continuar con la Reserva
+                    </a>
+                  </div>
+                </div>
+              </div>
+            </div>
+          <% } %>
+          
+          <% habitaciones.forEach(habitacion => { %>
+            <div class="col-md-6 col-lg-4 mb-4">
+              <div class="card h-100">
+                <img src="https://via.placeholder.com/300x200" class="card-img-top" alt="<%= habitacion.NombreTipo %>">
+                <div class="card-body">
+                  <h5 class="card-title"><%= habitacion.NombreTipo %> - <%= habitacion.NombreSucursal %></h5>
+                  <p class="card-text"><%= habitacion.Descripcion || 'Sin descripción' %></p>
+                  <ul class="list-group list-group-flush mb-3">
+                    <li class="list-group-item">Capacidad: <%= habitacion.Capacidad %> personas</li>
+                    <li class="list-group-item">Precio por noche: L.<%= habitacion.PrecioPorNoche.toFixed(2) %></li>
+                    <li class="list-group-item">Precio total (<%= numNoches %> noches): L.<%= (habitacion.PrecioPorNoche * numNoches).toFixed(2) %></li>
+                  </ul>
+                  <form action="/cliente/seleccionar-habitacion" method="POST">
+                    <input type="hidden" name="habitacionID" value="<%= habitacion.HabitacionID %>">
+                    <input type="hidden" name="fechaInicio" value="<%= filtros.fechaInicio %>">
+                    <input type="hidden" name="fechaFin" value="<%= filtros.fechaFin %>">
+                    <button type="submit" class="btn btn-primary w-100">
+                      <i class="fas fa-plus"></i> Seleccionar
+                    </button>
+                  </form>
+                </div>
+              </div>
+            </div>
+          <% }) %>
+        <% } %>
+      </div>
+    <% } %>
+  </div>
+  
+  <%- include('../partials/footer') %>
+  <%- include('../partials/scripts') %>
+  
+  <script>
+    // Validación de fechas
+    document.addEventListener('DOMContentLoaded', function() {
+      const fechaInicio = document.getElementById('fechaInicio');
+      const fechaFin = document.getElementById('fechaFin');
+      
+      // Establecer fecha mínima como hoy
+      const hoy = new Date().toISOString().split('T')[0];
+      fechaInicio.min = hoy;
+      
+      // Actualizar fecha mínima de salida cuando cambia la fecha de llegada
+      fechaInicio.addEventListener('change', function() {
+        if (fechaInicio.value) {
+          // Fecha de salida debe ser al menos un día después de la fecha de llegada
+          const fechaMin = new Date(fechaInicio.value);
+          fechaMin.setDate(fechaMin.getDate() + 1);
+          fechaFin.min = fechaMin.toISOString().split('T')[0];
+          
+          // Si la fecha de salida es anterior a la nueva fecha mínima, actualizarla
+          if (fechaFin.value && new Date(fechaFin.value) < fechaMin) {
+            fechaFin.value = fechaMin.toISOString().split('T')[0];
+          }
+        }
+      });
+    });
+  </script>
+</body>
+</html>
+

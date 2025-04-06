@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <%- include('partials/head', { titulo: titulo }) %>
+</head>
+<body>
+  <%- include('partials/navbar') %>
+  
+  <div class="container mt-4">
+    <div class="jumbotron">
+      <h1 class="display-4">Bienvenido a Hotel Zafiro 504</h1>
+      <p class="lead">El mejor lugar para disfrutar de su estadía en Honduras.</p>
+      <hr class="my-4">
+      <p>Ofrecemos habitaciones confortables, servicios de primera clase y una atención personalizada.</p>
+      <a class="btn btn-primary btn-lg" href="/registro" role="button">Regístrate</a>
+      <a class="btn btn-outline-primary btn-lg" href="/login" role="button">Iniciar Sesión</a>
+    </div>
+    
+    <div class="row mt-5">
+      <div class="col-md-12">
+        <h2 class="text-center mb-4">Nuestras Habitaciones</h2>
+      </div>
+    </div>
+    
+    <div class="row">
+      <div class="col-md-4 mb-4">
+        <div class="card">
+          <img src="https://via.placeholder.com/300x200" class="card-img-top" alt="Habitación Individual">
+          <div class="card-body">
+            <h5 class="card-title">Habitación Individual</h5>
+            <p class="card-text">Perfecta para viajeros solitarios. Incluye una cama individual, baño privado y todas las comodidades necesarias.</p>
+            <p class="card-text"><small class="text-muted">Desde L.1,200 por noche</small></p>
+          </div>
+        </div>
+      </div>
+      
+      <div class="col-md-4 mb-4">
+        <div class="card">
+          <img src="https://via.placeholder.com/300x200" class="card-img-top" alt="Habitación Doble">
+          <div class="card-body">
+            <h5 class="card-title">Habitación Doble</h5>
+            <p class="card-text">Ideal para parejas. Cuenta con una cama matrimonial, baño privado y vistas espectaculares.</p>
+            <p class="card-text"><small class="text-muted">Desde L.1,800 por noche</small></p>
+          </div>
+        </div>
+      </div>
+      
+      <div class="col-md-4 mb-4">
+        <div class="card">
+          <img src="https://via.placeholder.com/300x200" class="card-img-top" alt="Suite Familiar">
+          <div class="card-body">
+            <h5 class="card-title">Suite Familiar</h5>
+            <p class="card-text">Perfecta para familias. Incluye dos habitaciones, sala de estar, baño privado y todas las comodidades.</p>
+            <p class="card-text"><small class="text-muted">Desde L.2,500 por noche</small></p>
+          </div>
+        </div>
+      </div>
+    </div>
+    
+    <div class="row mt-5">
+      <div class="col-md-12">
+        <h2 class="text-center mb-4">Nuestros Servicios</h2>
+      </div>
+    </div>
+    
+    <div class="row">
+      <div class="col-md-3 mb-4 text-center">
+        <i class="fas fa-utensils fa-3x mb-3"></i>
+        <h4>Restaurante</h4>
+        <p>Disfrute de nuestra exquisita gastronomía local e internacional.</p>
+      </div>
+      
+      <div class="col-md-3 mb-4 text-center">
+        <i class="fas fa-swimming-pool fa-3x mb-3"></i>
+        <h4>Piscina</h4>
+        <p>Relájese en nuestra piscina con vistas panorámicas.</p>
+      </div>
+      
+      <div class="col-md-3 mb-4 text-center">
+        <i class="fas fa-spa fa-3x mb-3"></i>
+        <h4>Spa</h4>
+        <p>Rejuvenezca con nuestros tratamientos de spa y masajes.</p>
+      </div>
+      
+      <div class="col-md-3 mb-4 text-center">
+        <i class="fas fa-wifi fa-3x mb-3"></i>
+        <h4>Wi-Fi Gratis</h4>
+        <p>Manténgase conectado con nuestro servicio de internet de alta velocidad.</p>
+      </div>
+    </div>
+  </div>
+  
+  <%- include('partials/footer') %>
+  <%- include('partials/scripts') %>
+</body>
+</html>
+

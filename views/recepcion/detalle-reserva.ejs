@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <%- include('../partials/head', { titulo: titulo }) %>
+</head>
+<body>
+  <%- include('../partials/navbar') %>
+  
+  <div class="container mt-4">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+      <h1>Detalle de Reserva #<%= reserva.ReservaID %></h1>
+      <a href="/recepcion/reservas" class="btn btn-secondary">
+        <i class="fas fa-arrow-left"></i> Volver
+      </a>
+    </div>
+    
+    <%- include('../partials/mensajes') %>
+    
+    <div class="row">
+      <div class="col-md-8">
+        <div class="card mb-4">
+          <div class="card-header bg-primary text-white">
+            <h5 class="mb-0">Información de la Reserva</h5>
+          </div>
+          <div class="card-body">
+            <div class="row mb-3">
+              <div class="col-md-6">
+                <p><strong>Estado:</strong> 
+                  <% if (reserva.EstadoReserva === 'Pendiente') { %>
+                    <span class="badge bg-warning text-dark">Pendiente</span>
+                  <% } else if (reserva.EstadoReserva === 'Confirmada') { %>
+                    <span class="badge bg-success">Confirmada</span>
+                  <% } else if (reserva.EstadoReserva === 'Cancelada') { %>
+                    <span class="badge bg-danger">Cancelada</span>
+                  <% } else { %>
+                    <span class="badge bg-info">Completada</span>
+                  <% } %>
+                </p>
+                <p><strong>Sucursal:</strong> <%= reserva.NombreSucursal %></p>
+                <p><strong>Cliente:</strong> <%= reserva.PrimerNombre %> <%= reserva.PrimerApellido %></p>
+                <p><strong>Correo:</strong> <%= reserva.Correo %></p>
+                <p><strong>RTN:</strong> <%= reserva.RTN || 'No especificado' %></p>
+              </div>
+              <div class="col-md-6">
+                <p><strong>Total:</strong> L.<%= reserva.TotalEstadia.toFixed(2) %></p>
+                <% if (factura) { %>
+                  <p><strong>Factura:</strong> <%= factura.NumeroFactura %></p>
+                  <p><strong>Fecha de Emisión:</strong> <%= new Date(factura.FechaEmision).toLocaleDateString() %></p>
+                <% } %>
+              </div>
+            </div>
+            
+            <h6 class="mb-3">Habitaciones</h6>
+            <div class="table-responsive mb-4">
+              <table class="table table-bordered">
+                <thead class="table-light">
+                  <tr>
+                    <th>Número</th>
+                    <th>Tipo</th>
+                    <th>Capacidad</th>
+                    <th>Precio/Noche</th>
+                    <th>Check-in</th>
+                    <th>Check-out</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <% habitaciones.forEach(habitacion => { %>
+                    <tr>
+                      <td><%= habitacion.NumeroHabitacion %></td>
+                      <td><%= habitacion.NombreTipo %></td>
+                      <td><%= habitacion.Capacidad %> personas</td>
+                      <td>L.<%= habitacion.PrecioPorNoche.toFixed(2) %></td>
+                      <td>
+                        <%= new Date(habitacion.FechaInicio).toLocaleDateString() %><br>
+                        <%= habitacion.HoraInicio %>
+                      </td>
+                      <td>
+                        <%= new Date(habitacion.FechaFin).toLocaleDateString() %><br>
+                        <%= habitacion.HoraFin %>
+                      </td>
+                    </tr>
+                  <% }) %>
+                </tbody>
+              </table>
+            </div>
+            
+            <h6 class="mb-3">Servicios Adicionales</h6>
+            <div class="table-responsive">
+              <table class="table table-bordered">
+                <thead class="table-light">
+                  <tr>
+                    <th>Servicio</th>
+                    <th>Precio</th>
+                    <th>Cantidad</th>
+                    <th>Subtotal</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <% if (servicios.length === 0) { %>
+                    <tr>
+                      <td colspan="4" class="text-center">No hay servicios adicionales</td>
+                    </tr>
+                  <% } else { %>
+                    <% servicios.forEach(servicio => { %>
+                      <tr>
+                        <td><%= servicio.NombreServicio %></td>
+                        <td>L.<%= servicio.Precio.toFixed(2) %></td>
+                        <td><%= servicio.Cantidad %></td>
+                        <td>L.<%= (servicio.Precio * servicio.Cantidad).toFixed(2) %></td>
+                      </tr>
+                    <% }) %>
+                  <% } %>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <div class="col-md-4">
+        <div class="card mb-4">
+          <div class="card-header bg-success text-white">
+            <h5 class="mb-0">Acciones</h5>
+          </div>
+          <div class="card-body">
+            <% if (!factura && (reserva.EstadoReserva === 'Confirmada' || reserva.EstadoReserva === 'Completada')) { %>
+              <div class="mb-4">
+                <h6>Generar Factura</h6>
+                <form action="/recepcion/reservas/<%= reserva.ReservaID %>/factura" method="POST">
+                  <div class="mb-3">
+                    <label for="caiID" class="form-label">CAI</label>
+                    <select class="form-select" id="caiID" name="caiID" required>
+                      <option value="">Seleccione un CAI</option>
+                      <% cais.forEach(cai => { %>
+                        <option value="<%= cai.CAIID %>"><%= cai.CAICode %></option>
+                      <% }) %>
+                    </select>
+                  </div>
+                  <div class="mb-3">
+                    <label for="empleadoID" class="form-label">Empleado</label>
+                    <select class="form-select" id="empleadoID" name="empleadoID" required>
+                      <option value="">Seleccione un empleado</option>
+                      <% empleados.forEach(empleado => { %>
+                        <option value="<%= empleado.EmpleadoID %>"><%= empleado.PrimerNombre %> <%= empleado.PrimerApellido %></option>
+                      <% }) %>
+                    </select>
+                  </div>
+                  <div class="d-grid">
+                    <button type="submit" class="btn btn-primary">Generar Factura</button>
+                  </div>
+                </form>
+              </div>
+            <% } %>
+            
+            <div class="mb-4">
+              <h6>Cambiar Estado</h6>
+              <form action="/recepcion/reservas/<%= reserva.ReservaID %>/estado" method="POST">
+                <div class="mb-3">
+                  <select class="form-select" id="estado" name="estado" required>
+                    <option value="Pendiente" <%= reserva.EstadoReserva === 'Pendiente' ? 'selected' : '' %>>Pendiente</option>
+                    <option value="Confirmada" <%= reserva.EstadoReserva === 'Confirmada' ? 'selected' : '' %>>Confirmada</option>
+                    <option value="Cancelada" <%= reserva.EstadoReserva === 'Cancelada' ? 'selected' : '' %>>Cancelada</option>
+                    <option value="Completada" <%= reserva.EstadoReserva === 'Completada' ? 'selected' : '' %>>Completada</option>
+                  </select>
+                </div>
+                <div class="d-grid">
+                  <button type="submit" class="btn btn-warning">Cambiar Estado</button>
+                </div>
+              </form>
+            </div>
+            
+           
+          </div>
+        </div>
+        
+        <div class="card">
+          <div class="card-header bg-info text-white">
+            <h5 class="mb-0">Cliente</h5>
+          </div>
+          <div class="card-body">
+            <p><strong>Nombre:</strong> <%= reserva.PrimerNombre %> <%= reserva.PrimerApellido %></p>
+            <p><strong>Correo:</strong> <%= reserva.Correo %></p>
+            <p><strong>RTN:</strong> <%= reserva.RTN || 'No especificado' %></p>
+           
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  
+  <%- include('../partials/footer') %>
+  <%- include('../partials/scripts') %>
+</body>
+</html>
+

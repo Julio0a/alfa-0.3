@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <%- include('../partials/head', { titulo: titulo }) %>
+</head>
+<body>
+  <%- include('../partials/navbar') %>
+  
+  <div class="container mt-5">
+    <div class="row justify-content-center">
+      <div class="col-md-8">
+        <div class="card">
+          <div class="card-header bg-primary text-white">
+            <h4 class="mb-0">Registro de Cliente</h4>
+          </div>
+          <div class="card-body">
+            <%- include('../partials/mensajes') %>
+            
+            <form action="/registro" method="POST">
+              <div class="row">
+                <div class="col-md-6 mb-3">
+                  <label for="primerNombre" class="form-label">Primer Nombre</label>
+                  <input type="text" class="form-control" id="primerNombre" name="primerNombre" required>
+                </div>
+                <div class="col-md-6 mb-3">
+                  <label for="segundoNombre" class="form-label">Segundo Nombre</label>
+                  <input type="text" class="form-control" id="segundoNombre" name="segundoNombre">
+                </div>
+              </div>
+              
+              <div class="row">
+                <div class="col-md-6 mb-3">
+                  <label for="primerApellido" class="form-label">Primer Apellido</label>
+                  <input type="text" class="form-control" id="primerApellido" name="primerApellido" required>
+                </div>
+                <div class="col-md-6 mb-3">
+                  <label for="segundoApellido" class="form-label">Segundo Apellido</label>
+                  <input type="text" class="form-control" id="segundoApellido" name="segundoApellido">
+                </div>
+              </div>
+              
+              <div class="row">
+                <div class="col-md-6 mb-3">
+                  <label for="numeroIdentidad" class="form-label">Número de Identidad</label>
+                  <input type="text" class="form-control" id="numeroIdentidad" name="numeroIdentidad" required>
+                </div>
+                <div class="col-md-6 mb-3">
+                  <label for="telefono" class="form-label">Teléfono</label>
+                  <input type="text" class="form-control" id="telefono" name="telefono" required>
+                </div>
+                <div class="col-md-6 mb-3">
+                  <label for="rtn" class="form-label">RTN (opcional)</label>
+                  <input type="text" class="form-control" id="rtn" name="rtn">
+                </div>
+              </div>
+              
+              <div class="mb-3">
+                <label for="correo" class="form-label">Correo Electrónico</label>
+                <input type="email" class="form-control" id="correo" name="correo" required>
+              </div>
+              
+              <div class="row">
+                <div class="col-md-6 mb-3">
+                  <label for="nombreUsuario" class="form-label">Nombre de Usuario</label>
+                  <input type="text" class="form-control" id="nombreUsuario" name="nombreUsuario" required>
+                </div>
+                <div class="col-md-6 mb-3">
+                  <label for="contrasena" class="form-label">Contraseña</label>
+                  <input type="password" class="form-control" id="contrasena" name="contrasena" required>
+                </div>
+              </div>
+              
+              <div class="d-grid gap-2">
+                <button type="submit" class="btn btn-primary">Registrarse</button>
+              </div>
+            </form>
+            
+            <div class="mt-3 text-center">
+              <p>¿Ya tienes una cuenta? <a href="/login">Inicia sesión aquí</a></p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  
+  <%- include('../partials/footer') %>
+  <%- include('../partials/scripts') %>
+</body>
+</html>
+

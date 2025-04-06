@@ -1,0 +1,21 @@
+<% if (locals.mensajes && mensajes.error) { %>
+  <div class="alert alert-danger alert-dismissible fade show" role="alert">
+    <%= mensajes.error %>
+    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+  </div>
+<% } %>
+
+<% if (locals.mensajes && mensajes.exito) { %>
+  <div class="alert alert-success alert-dismissible fade show" role="alert">
+    <%= mensajes.exito %>
+    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+  </div>
+<% } %>
+
+<% if (locals.mensajes && mensajes.info) { %>
+  <div class="alert alert-info alert-dismissible fade show" role="alert">
+    <%= mensajes.info %>
+    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+  </div>
+<% } %>
+

@@ -1,0 +1,18 @@
+// Mejorar la vista de clientes para incluir búsqueda avanzada
+<div class="card mb-4">
+  <div class="card-header bg-primary text-white">
+    <h5 class="mb-0">Buscar Clientes</h5>
+  </div>
+  <div class="card-body">
+    <form action="/recepcion/clientes" method="GET" class="row g-3">
+      <div class="col-md-10">
+        <label for="busqueda" class="form-label">Buscar por Nombre, Apellido, Identidad o Correo</label>
+        <input type="text" class="form-control" id="busqueda" name="busqueda" value="<%= busqueda || '' %>" placeholder="Ingrese término de búsqueda">
+      </div>
+      <div class="col-md-2 d-flex align-items-end">
+        <button type="submit" class="btn btn-primary w-100">Buscar</button>
+      </div>
+    </form>
+  </div>
+</div>
+
